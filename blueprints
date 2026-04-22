@@ -1,0 +1,33 @@
+#
+# Copyright (c) 2022-2026 Broadcom. All Rights Reserved.
+# Broadcom Confidential. The term "Broadcom" refers to Broadcom Inc.
+# and/or its subsidiaries.
+#
+name: simple-blueprint-git-test-b68b72b
+version: v1
+formatVersion: 1
+inputs:
+  supervisornamespace-name:
+    type: string
+  storageClass:
+    type: string
+resources:
+  CCI_Supervisor_Namespace_1:
+    type: CCI.Supervisor.Namespace
+    properties:
+      name: ${input.supervisornamespace-name}
+      existing: true
+  Virtual_Machine_1:
+    type: CCI.Supervisor.Resource
+    properties:
+      context: ${resource.CCI_Supervisor_Namespace_1.id}
+      manifest:
+        apiVersion: vmoperator.vmware.com/v1alpha3
+        kind: VirtualMachine
+        metadata:
+          name: virtual-machine-e2e-1-${env.shortDeploymentId}
+        spec:
+          imageName: vmi-97fcf9d74ad2e5149
+          className: best-effort-xsmall
+          powerState: PoweredOn
+          storageClass: ${input.storageClass}
